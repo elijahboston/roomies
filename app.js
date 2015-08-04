@@ -3,14 +3,14 @@ var app = angular.module('roomiesApp', []);
 app.controller('HouseController', function() {
 	var house = this;
 	house.roomies = [
-		{name: 'John', owes: 0.00, expenses: []},
-		{name: 'Bob', owes: 0.00, expenses: []}
+		{id:0, name: 'Elijah', owes: 0.00, expenses: []},
+		{id:1, name: 'James', owes: 0.00, expenses: []}
 	];
 
 	house.expenses = [];
 
 	house.addRoomie = function() {
-		house.roomies.push({name: house.roomieName, owes: 0.00, expenses: []});
+		house.roomies.push({id: house.roomies.length, name: house.roomieName, owes: 0.00, expenses: []});
 		house.roomieName = '';
 	};
 
@@ -41,4 +41,34 @@ app.controller('HouseController', function() {
 			}
 		});
 	};
+
+	house.changeExpenseSplit = function(changedRoomie, changedExpense) {
+		// Add check to make sure the new split is less than 100%
+		angular.forEach(house.roomies, function(roomie) {
+			var splitRemainder = (100-changedExpense.split)/(house.roomies.length-1);
+
+			for(x=0; x < roomie.expenses.length; x++) {
+				// Calculate new %'s for this expense and the expense belonging to other roommates
+				if (changedRoomie.id == roomie.id) {
+					roomie.expenses[x].split = changedExpense.split;
+					roomie.expenses[x].indivCost = (changedExpense.split/100)*roomie.expenses[x].totalCost;
+					house.recalc();
+				} else {
+					roomie.expenses[x].split = splitRemainder;
+					roomie.expenses[x].indivCost = (splitRemainder/100)*roomie.expenses[x].totalCost;
+					house.recalc();
+				}
+			}
+		});
+	}
+
+	house.recalc = function() {
+		angular.forEach(house.roomies, function(roomie) {
+			var owes = 0.00;
+			angular.forEach(roomie.expenses, function(expense) {
+				owes += expense.indivCost;
+			});
+			roomie.owes = owes;
+		});
+	}
 });

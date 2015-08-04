@@ -18,7 +18,7 @@
             {{roomie.name}} - {{roomie.owes | currency}}<br/>
             Expenses:
             <ul>
-                <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} ({{expense.split | number:2}}%)</li>
+                <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} (<input type="text" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%)</li>
             </ul>
         </li>
     </ul>
