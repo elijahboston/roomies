@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="roomiesApp">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="app.js"></script>
+    <meta charset="UTF-8">
+    <title>Roomies App</title>
+</head>
+<body>
+<h2>Roomies</h2>
+<div ng-controller="HouseController as house">
+    <form ng-submit="house.addRoomie()">
+        <input type="text" ng-model="house.roomieName" placeholder="Name"/>
+        <input type="submit" value="add"/>
+    </form>
+    <ul>
+        <li ng-repeat="roomie in house.roomies">
+            {{roomie.name}} - {{roomie.owes | currency}}<br/>
+            Expenses:
+            <ul>
+                <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} ({{expense.split | number:2}}%)</li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr/>
+
+    <h2>Expenses</h2>
+    <form ng-submit="house.addExpense()">
+        <input type="text" ng-model="house.expenseName" placeholder="Name"/>
+        <input type="text" ng-model="house.expenseTotalCost" placeholder="Expense"/>
+        <input type="submit" value="add"/>
+    </form>
+    <ul>
+        <li ng-repeat="expense in house.expenses">{{expense.name}} - {{expense.totalCost | currency}} (<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</li>
+    </ul>
+</div>
+</body>
+</html>
