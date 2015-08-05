@@ -1,0 +1,20 @@
+body {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+
+#header {
+  width: 100%;
+  border-bottom: 1px solid #ccc; }
+
+#breakdown, #expenses {
+  width: 30%;
+  padding: 0 5%;
+  float: left;
+  height: 100%; }
+
+#breakdown {
+  border-right: 1px solid #ccc; }
+
+input.cost {
+  width: 25px; }
+
+/*# sourceMappingURL=style.css.map */

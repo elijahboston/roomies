@@ -3,37 +3,41 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="app.js"></script>
+    <link rel="stylesheet" href="style.css"/>
     <meta charset="UTF-8">
     <title>Roomies App</title>
 </head>
 <body>
-<h2>Roomies</h2>
+<div id="header"><h2>Roomies</h2></div>
 <div ng-controller="HouseController as house">
-    <form ng-submit="house.addRoomie()">
-        <input type="text" ng-model="house.roomieName" placeholder="Name"/>
-        <input type="submit" value="add"/>
-    </form>
-    <ul>
-        <li ng-repeat="roomie in house.roomies">
-            {{roomie.name}} - {{roomie.owes | currency}}<br/>
-            Expenses:
-            <ul>
-                <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} (<input type="text" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%)</li>
-            </ul>
-        </li>
-    </ul>
 
-    <hr/>
+    <div id="breakdown">
+        <h3>Cost Breakdown</h3>
+        <form ng-submit="house.addRoomie()">
+            <input type="text" ng-model="house.roomieName" placeholder="Name"/>
+            <input type="submit" value="add roomie"/>
+        </form>
+        <ul>
+            <li ng-repeat="roomie in house.roomies">
+                {{roomie.name}} - {{roomie.owes | currency}}<br/>
+                <ul>
+                    <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} (<input type="text" class="cost" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%)</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 
-    <h2>Expenses</h2>
-    <form ng-submit="house.addExpense()">
-        <input type="text" ng-model="house.expenseName" placeholder="Name"/>
-        <input type="text" ng-model="house.expenseTotalCost" placeholder="Expense"/>
-        <input type="submit" value="add"/>
-    </form>
-    <ul>
-        <li ng-repeat="expense in house.expenses">{{expense.name}} - {{expense.totalCost | currency}} (<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</li>
-    </ul>
+    <div id="expenses">
+        <h3>Expenses</h3>
+        <form ng-submit="house.addExpense()">
+            <input type="text" ng-model="house.expenseName" placeholder="Name"/>
+            <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$"/>
+            <input type="submit" value="add expense"/>
+        </form>
+        <ul>
+            <li ng-repeat="expense in house.expenses">{{expense.name}} - {{expense.totalCost | currency}} (<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
