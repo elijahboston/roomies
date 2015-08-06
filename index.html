@@ -9,7 +9,7 @@
 </head>
 <body>
 <div id="header"><h2>Roomies</h2></div>
-<div ng-controller="HouseController as house">
+<div id="app" ng-controller="HouseController as house">
 
     <div id="breakdown">
         <h3>Cost Breakdown</h3>
@@ -17,14 +17,27 @@
             <input type="text" ng-model="house.roomieName" placeholder="Name"/>
             <input type="submit" value="add roomie"/>
         </form>
-        <ul>
-            <li ng-repeat="roomie in house.roomies">
-                {{roomie.name}} - {{roomie.owes | currency}}<br/>
-                <ul>
-                    <li ng-repeat="expense in roomie.expenses">{{expense.name}} - {{expense.indivCost | currency}} (<input type="text" class="cost" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%)</li>
-                </ul>
-            </li>
-        </ul>
+        <br/>
+        <table ng-repeat="roomie in house.roomies">
+            <tr>
+                <td>
+                    <span class="name">{{roomie.name}}</span>
+                </td>
+                <td><span class="owes">{{roomie.owes | currency}}</span></td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="cost-breakdown">
+                        <tr ng-repeat="expense in roomie.expenses">
+                            <td>{{expense.name}}</td>
+                            <td><input type="text" class="split" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%</td>
+                            <td>{{expense.indivCost | currency}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
     </div>
 
     <div id="expenses">
@@ -34,9 +47,14 @@
             <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$"/>
             <input type="submit" value="add expense"/>
         </form>
-        <ul>
-            <li ng-repeat="expense in house.expenses">{{expense.name}} - {{expense.totalCost | currency}} (<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</li>
-        </ul>
+        <br/>
+        <table>
+            <tr ng-repeat="expense in house.expenses">
+                <td>{{expense.name}}</td>
+                <td>{{expense.totalCost | currency}}</td>
+                <td>(<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</td>
+            </tr>
+        </table>
     </div>
 </div>
 </body>
