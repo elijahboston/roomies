@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="roomiesApp">
 <head>
+    <script type="text/javascript" src="spahql-min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="app.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,100' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="style.css"/>
     <meta charset="UTF-8">
     <title>Roomies App</title>
@@ -14,18 +16,21 @@
     <div id="breakdown">
         <h3>Cost Breakdown</h3>
         <form ng-submit="house.addRoomie()">
-            <input type="text" ng-model="house.roomieName" placeholder="Name"/>
-            <input type="submit" value="add roomie"/>
+            <input type="text" ng-model="house.roomieName" placeholder="Roommate Name" id="roomie-name"/>
+            <input type="submit" value="+" id="roomie-add"/>
         </form>
+        <p ng-hide="house.hasRoomies()">First, add some roommates.</p>
         <br/>
         <table ng-repeat="roomie in house.roomies">
             <tr>
-                <td>
-                    <span class="name">{{roomie.name}}</span>
+                <td class="roomie-delete-td"><a href="#" ng-click="house.deleteRoomie(roomie)" class="delete">x</a></td>
+                <td class="roomie-name">
+                    <span class="name"> {{roomie.name}}</span>
                 </td>
-                <td><span class="owes">{{roomie.owes | currency}}</span></td>
+                <td class="roomie-owes">{{roomie.owes | currency}}</td>
             </tr>
             <tr>
+                <td></td>
                 <td>
                     <table class="cost-breakdown">
                         <tr ng-repeat="expense in roomie.expenses">
@@ -40,19 +45,19 @@
         </table>
     </div>
 
-    <div id="expenses">
+    <div id="expenses" ng-show="house.hasRoomies()">
         <h3>Expenses</h3>
         <form ng-submit="house.addExpense()">
-            <input type="text" ng-model="house.expenseName" placeholder="Name"/>
-            <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$"/>
-            <input type="submit" value="add expense"/>
+            <input type="text" ng-model="house.expenseName" placeholder="Expense Name" id="expense-name"/>
+            <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$" id="expense-cost"/>
+            <input type="submit" value="+" id="expense-add"/>
         </form>
         <br/>
         <table>
             <tr ng-repeat="expense in house.expenses">
                 <td>{{expense.name}}</td>
                 <td>{{expense.totalCost | currency}}</td>
-                <td>(<a href="#" ng-click="house.deleteExpense(expense)">Delete</a>)</td>
+                <td><a href="#" ng-click="house.deleteExpense(expense)" class="delete">x</a></td>
             </tr>
         </table>
     </div>

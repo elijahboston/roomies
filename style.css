@@ -1,33 +1,60 @@
+html {
+  margin: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.4)), url("bg.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  color: white; }
+
 html, body, #app {
   height: 100%; }
 
 body {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif; }
+  font-size: 20px;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: lighter; }
+
+input {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 5px;
+  margin-right: 4px;
+  color: #FFF;
+  font-size: 22px; }
 
 #header {
   width: 100%;
-  border-bottom: 1px solid #ccc; }
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25); }
 
 #breakdown, #expenses {
-  width: 30%;
+  width: 35%;
   padding: 0 5%;
   float: left;
   height: 100%; }
 
 #breakdown {
-  border-right: 1px solid #ccc; }
+  border-right: 1px solid rgba(255, 255, 255, 0.25); }
+  #breakdown #roomie-add {
+    width: 40px; }
+
+#expenses #expense-name {
+  width: 160px; }
+#expenses #expense-cost {
+  width: 85px; }
+#expenses #expense-add {
+  width: 40px; }
+
+.delete {
+  background-color: rgba(255, 255, 255, 0.25);
+  padding: 2px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  color: #79041B; }
 
 input.cost {
   width: 35px; }
 
 input.split {
-  width: 25px; }
-
-.name {
-  font-weight: bold; }
-
-.owes {
-  color: green; }
+  width: 37px; }
 
 table.cost-breakdown {
   padding-left: 10px; }
@@ -35,6 +62,15 @@ table.cost-breakdown {
 table {
   width: 100%; }
   table tr td {
-    vertical-align: top; }
+    padding: 5px;
+    vertical-align: middle; }
+  table tr td.roomie-delete-td {
+    width: 25px; }
+  table tr td.roomie-name {
+    border-bottom: 1px solid white; }
+  table tr td.roomie-owes {
+    width: 85px;
+    background-color: white;
+    color: #0F8A0A; }
 
 /*# sourceMappingURL=style.css.map */

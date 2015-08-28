@@ -1,28 +1,73 @@
 var app = angular.module('roomiesApp', []);
 
+function getRoomieByName(db, name) {
+	// Return roommate by name
+	var result = db.select('/*/[/name == "'+name+'"]');
+	return result.length == 1 ? result[0].value : undefined;
+};
+
+function getExpensesByName(db, name) {
+	// Return expenses across all roomates by name
+	result = db.select('/*/expenses/*[/name == "'+name+'"]');
+	return result.length > 0 ? result : undefined;
+};
+
 app.controller('HouseController', function() {
 	var house = this;
 	house.roomies = [
-		{id:0, name: 'Elijah', owes: 0.00, expenses: []},
-		{id:1, name: 'James', owes: 0.00, expenses: []}
 	];
 
 	house.expenses = [];
+
+	house.hasRoomies = function() {
+		if (house.roomies.length > 0) { return true; }
+		return false;
+	};
 
 	house.addRoomie = function() {
 		house.roomies.push({id: house.roomies.length, name: house.roomieName, owes: 0.00, expenses: []});
 		house.roomieName = '';
 	};
 
+	house.deleteRoomie = function(deletedRoomie) {
+		// Un-split Expenses
+		var db = SpahQL.db(house.roomies);
+
+		// Select based on name
+		var deletedRoomieResult = getRoomieByName(db, deletedRoomie.name);
+
+		angular.forEach(deletedRoomie.expenses, function(expense) {
+			// Get roomies with matching expenses based on id
+			var matchingExpenses = getExpensesByName(db, expense.name);
+
+			// If this is the only user with this expense, then it goes away
+			// otherwise we split it evenly with the remaining roommates
+			var newSplit = matchingExpenses.length-1 > 0 ? 100/(matchingExpenses.length-1) : 0;
+
+			// If we are splitting it, apply to the other roommates
+			if (newSplit > 0) {
+				angular.forEach(matchingExpenses, function(expenseResult) {
+					if (deletedRoomie.id != expenseResult.value.roomieId) {
+						expenseResult.value.split = newSplit;
+						expenseResult.value.indivCost = expenseResult.value.totalCost*(100/newSplit);
+					}
+				});
+			}
+		});
+		// Finally, delete this user and their expenses
+		house.roomies.splice(deletedRoomieResult.id, 1);
+		house.recalc();
+	};
+
 	house.addExpense = function() {
 		var id = house.expenses.length;
-		house.expenses.push({id: id, name: house.expenseName, totalCost: house.expenseTotalCost});
+		house.expenses.push({id: id, name: house.expenseName, totalCost: parseFloat(house.expenseTotalCost) });
 
 		angular.forEach(house.roomies, function(roomie) {
 			var split = 100/house.roomies.length;
 			var indivCost = house.expenseTotalCost / house.roomies.length;
 
-			roomie.expenses.push({id: id, name: house.expenseName, totalCost: house.expenseTotalCost, indivCost: indivCost, split: split});
+			roomie.expenses.push({id: id, roomieId: roomie.id, name: house.expenseName, totalCost: parseFloat(house.expenseTotalCost), indivCost: indivCost, split: split});
 			roomie.owes += indivCost;
 		});
 
@@ -49,15 +94,14 @@ app.controller('HouseController', function() {
 
 			for(x=0; x < roomie.expenses.length; x++) {
 				// Calculate new %'s for this expense and the expense belonging to other roommates
-				if (changedRoomie.id == roomie.id && changedExpense.id == roomie.expenses[x].id) {
+				if (changedRoomie.name == roomie.name && changedExpense.name == roomie.expenses[x].name) {
 					roomie.expenses[x].split = changedExpense.split;
 					roomie.expenses[x].indivCost = (changedExpense.split/100)*roomie.expenses[x].totalCost;
-					house.recalc();
-				} else if (changedExpense.id == roomie.expenses[x].id) {
+				} else if (changedExpense.name == roomie.expenses[x].name) {
 					roomie.expenses[x].split = splitRemainder;
 					roomie.expenses[x].indivCost = (splitRemainder/100)*roomie.expenses[x].totalCost;
-					house.recalc();
 				}
+				house.recalc();
 			}
 		});
 	}
