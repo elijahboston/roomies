@@ -4,20 +4,37 @@ function getRoomieByName(db, name) {
 	// Return roommate by name
 	var result = db.select('/*/[/name == "'+name+'"]');
 	return result.length == 1 ? result[0].value : undefined;
-};
+}
 
 function getExpensesByName(db, name) {
 	// Return expenses across all roomates by name
 	result = db.select('/*/expenses/*[/name == "'+name+'"]');
-	return result.length > 0 ? result : undefined;
-};
+	return result.length > 0 ? result : [];
+}
+
+function init(house) {
+	// Try to initialize with local data
+	var localRoomies = localStorage.getItem('rmsRoomies'),
+		localExpenses = localStorage.getItem('rmsExpenses');
+
+	if (localRoomies && localExpenses) {
+		house.roomies = JSON.parse(localRoomies);
+		house.expenses = JSON.parse(localExpenses);
+	} else {
+		house.roomies = [];
+		house.expenses = [];
+	}
+}
+
 
 app.controller('HouseController', function() {
 	var house = this;
-	house.roomies = [
-	];
+	init(house);
 
-	house.expenses = [];
+	house.save = function() {
+		localStorage.setItem('rmsRoomies', JSON.stringify(this.roomies));
+		localStorage.setItem('rmsExpenses', JSON.stringify(this.expenses));
+	};
 
 	house.hasRoomies = function() {
 		if (house.roomies.length > 0) { return true; }
@@ -47,7 +64,7 @@ app.controller('HouseController', function() {
 			// If we are splitting it, apply to the other roommates
 			if (newSplit > 0) {
 				angular.forEach(matchingExpenses, function(expenseResult) {
-					if (deletedRoomie.id != expenseResult.value.roomieId) {
+					if (deletedRoomie.name != expenseResult.value.roomieName) {
 						expenseResult.value.split = newSplit;
 						expenseResult.value.indivCost = expenseResult.value.totalCost*(100/newSplit);
 					}
@@ -67,30 +84,72 @@ app.controller('HouseController', function() {
 			var split = 100/house.roomies.length;
 			var indivCost = house.expenseTotalCost / house.roomies.length;
 
-			roomie.expenses.push({id: id, roomieId: roomie.id, name: house.expenseName, totalCost: parseFloat(house.expenseTotalCost), indivCost: indivCost, split: split});
+			roomie.expenses.push({id: id, roomieName: roomie.name, name: house.expenseName, totalCost: parseFloat(house.expenseTotalCost), indivCost: indivCost, split: split});
 			roomie.owes += indivCost;
 		});
 
 		house.expenseName = '';
 		house.expenseTotalCost = '';
+		house.recalc();
 	};
 
 	house.deleteExpense = function(deletedExpense) {
+		// Remove an expense from the entire household
 		house.expenses.splice(deletedExpense.id, 1);
 		angular.forEach(house.roomies, function(roomie) {
 			for(x=0; x < roomie.expenses.length; x++) {
 				if (roomie.expenses[x].id == deletedExpense.id) {
 					roomie.expenses.splice(x,1);
-					house.recalc();
 				}
 			}
 		});
+		house.recalc();
+	};
+
+	house.deleteIndividualExpense = function(selectedRoomie, deletedExpense) {
+		// Remove an expense from a single roomie, split it among those who still share the expense
+		// or remove it entirely
+		selectedRoomie.expenses.splice(deletedExpense.id, 1);
+		var db = SpahQL.db(house.roomies);
+		var sharedExpenses = getExpensesByName(db, deletedExpense.name);
+
+		if (sharedExpenses.length > 0) {
+			var newSplit = 100/sharedExpenses.length;
+			angular.forEach(sharedExpenses, function(expense) {
+				if (expense.roomieName != selectedRoomie.name) {
+					var roomie = getRoomieByName(db, expense.value.roomieName);
+					angular.forEach(roomie.expenses, function(roomieExpense) {
+						if (roomieExpense.name == deletedExpense.name) {
+							roomieExpense.split = newSplit;
+							roomieExpense.indivCost = (newSplit/100)*roomieExpense.totalCost;
+						}
+					});
+
+
+				}
+			});
+		} else {
+			angular.forEach(house.expenses, function(expense) {
+				if (expense.name == deletedExpense.name) {
+					house.expenses.splice(expense.id, 1);
+				}
+			});
+		}
+		house.recalc();
 	};
 
 	house.changeExpenseSplit = function(changedRoomie, changedExpense) {
+		var sharingExpense = 0;
+		angular.forEach(house.roomies, function(roomie) {
+			angular.forEach(roomie.expenses, function(expense) {
+				if (changedExpense.name == expense.name) {
+					sharingExpense++;
+				}
+			});
+		});
 		// Add check to make sure the new split is less than 100%
 		angular.forEach(house.roomies, function(roomie) {
-			var splitRemainder = (100-changedExpense.split)/(house.roomies.length-1);
+			var splitRemainder = (100-changedExpense.split)/(sharingExpense-1);
 
 			for(x=0; x < roomie.expenses.length; x++) {
 				// Calculate new %'s for this expense and the expense belonging to other roommates
@@ -101,10 +160,11 @@ app.controller('HouseController', function() {
 					roomie.expenses[x].split = splitRemainder;
 					roomie.expenses[x].indivCost = (splitRemainder/100)*roomie.expenses[x].totalCost;
 				}
-				house.recalc();
 			}
 		});
-	}
+
+		house.recalc();
+	};
 
 	house.recalc = function() {
 		angular.forEach(house.roomies, function(roomie) {
@@ -114,5 +174,11 @@ app.controller('HouseController', function() {
 			});
 			roomie.owes = owes;
 		});
-	}
+		house.save();
+	};
+
+	house.reset = function() {
+		localStorage.clear();
+		init(house);
+	};
 });

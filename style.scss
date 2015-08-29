@@ -1,3 +1,37 @@
+@font-face {
+  font-family: 'roomie-font';
+  src: url('./font/roomie-font.eot?6710013');
+  src: url('./font/roomie-font.eot?6710013#iefix') format('embedded-opentype'),
+  url('./font/roomie-font.woff?6710013') format('woff'),
+  url('./font/roomie-font.ttf?6710013') format('truetype'),
+  url('./font/roomie-font.svg?6710013#roomie-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$border:1px solid rgba(255, 255, 255, 0.25);
+@mixin action-button() {
+  color:#c8c8c8;
+  font-family: "roomie-font";
+  background:transparent;
+  padding: 2px 5px;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  cursor:pointer;
+
+  &:hover {
+    color:white;
+    -webkit-transition: color 1000ms linear;
+    -moz-transition: color 1000ms linear;
+    -o-transition: color 1000ms linear;
+    -ms-transition: color 1000ms linear;
+    transition: color 150ms linear;
+  }
+}
+.icon {font-family: "roomie-font";}
+
 html {
   margin:0;
   background:linear-gradient( rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.4) ), url('bg.jpg');
@@ -13,7 +47,7 @@ body {
 }
 input {
   background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: $border;
   padding: 5px;
   margin-right: 4px;
   color: #FFF;
@@ -21,38 +55,44 @@ input {
 }
 #header {
   width:100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: $border;
+}
+#reset {
+  position: absolute;
+  right: 0;
+  padding: 10px;
+  background-color: #FFF;
+  color: #000;
+  text-decoration: none;
 }
 #breakdown, #expenses{
   width:35%;
   padding:0 5%;
   float:left;
-  height:100%;
 }
 
 #breakdown {
-  border-right: 1px solid rgba(255, 255, 255, 0.25);
-  #roomie-add { width:40px; }
+  border-right: $border;
+  height:100%;
 }
 
 #expenses {
   #expense-name { width:160px; }
   #expense-cost { width:85px; }
-  #expense-add { width:40px; }
+}
+.add {
+  @include action-button();
 }
 .delete {
-  background-color: rgba(255, 255, 255, 0.25);
-  padding: 2px 5px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  text-decoration: none;
-  color: #79041B;
+  @include action-button();
 }
+
 input.cost {
   width:35px;
 }
 
 input.split {
-  width:37px;
+  width:55px;
 }
 
 table.cost-breakdown {
