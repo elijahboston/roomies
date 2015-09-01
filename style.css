@@ -18,6 +18,7 @@ html, body, #app {
   height: 100%; }
 
 body {
+  margin: 0;
   font-size: 20px;
   font-family: 'Work Sans', sans-serif;
   font-weight: lighter; }
@@ -32,6 +33,7 @@ input {
 
 #header {
   width: 100%;
+  padding: 0 0 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.25); }
 
 #reset {
@@ -48,8 +50,7 @@ input {
   float: left; }
 
 #breakdown {
-  border-right: 1px solid rgba(255, 255, 255, 0.25);
-  height: 100%; }
+  border-right: 1px solid rgba(255, 255, 255, 0.25); }
 
 #expenses #expense-name {
   width: 160px; }
@@ -114,5 +115,15 @@ table {
     width: 85px;
     background-color: white;
     color: #0F8A0A; }
+
+#credits {
+  clear: both;
+  position: relative;
+  background: white;
+  width: 100%;
+  color: black;
+  font-size: 14px;
+  padding: 10px 0;
+  text-align: center; }
 
 /*# sourceMappingURL=style.css.map */
