@@ -16,18 +16,19 @@
 <div id="app" class="row" ng-controller="HouseController as house">
     <a href="#" ng-click="house.reset()" id="reset" ng-show="house.hasRoomies()">Reset</a>
     <div id="breakdown">
-        <h3 ng-click="house.setSection('breakdown')">
-            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'inactive' : 'active'">&#xe603;</span>
-            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'active' : 'inactive'">&#xe604;</span>
-            Cost Breakdown
-        </h3>
-        <div class="collapse-container" ng-class="{active : house.sectionSelected('breakdown')}">
+        <div id="add-roomie">
             <form ng-submit="house.addRoomie()">
-                <input type="text" ng-model="house.roomieName" placeholder="Roommate Name" id="roomie-name"/>
+                <input type="text" ng-model="house.roomieName" placeholder="Add Roommate" id="roomie-name"/>
                 <input type="submit" value="&#xe601;" class="add icon"/>
             </form>
             <p ng-hide="house.hasRoomies()">First, add some roommates.</p>
-            <br/>
+        </div>
+        <h3 ng-click="house.setSection('breakdown')" ng-show="house.hasRoomies()">
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'inactive' : 'active'">&#xe603;</span>
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'active' : 'inactive'">&#xe604;</span>
+            Expense Breakdown
+        </h3>
+        <div class="collapse-container" ng-class="{active : house.sectionSelected('breakdown')}">
             <table ng-repeat="roomie in house.roomies">
                 <tr>
                     <td class="roomie-delete-td"><a href="#" ng-click="house.deleteRoomie(roomie)" class="delete">&#xe602;</a></td>
@@ -54,12 +55,12 @@
     </div>
 
     <div id="expenses" ng-show="house.hasRoomies()">
+        <p class="summary" ng-show="house.hasRoomiesNoExpenses()">Next, add some expenses below.</p>
         <h3 ng-click="house.setSection('expenses')">
             <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'inactive' : 'active'">&#xe603;</span>
             <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'active' : 'inactive'">&#xe604;</span>
-            Expenses
+            Expenses <span ng-show="house.hasExpenses()">- {{house.totalExpenses() | currency}} total</span>
         </h3>
-        <div class="summary">Total: {{house.totalExpenses() | currency}}</div>
         <div class="collapse-container" ng-class="{active : house.sectionSelected('expenses')}">
             <form ng-submit="house.addExpense()">
                 <input type="text" ng-model="house.expenseName" placeholder="Expense Name" id="expense-name"/>

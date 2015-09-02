@@ -101,6 +101,7 @@ input[type="submit"]
 }
 
 #expenses {
+  h3 { margin-top:0; }
   #expense-name { width:52%; }
   #expense-cost { width:20%; }
 }
@@ -195,6 +196,16 @@ table {
     width:100%;
     float:left;
     padding:0;
+  }
+
+  #breakdown {
+    #add-roomie {
+      padding:15px;
+
+      #roomie-name {
+        width:57%;
+      }
+    }
   }
 
   .collapse-container {

@@ -43,6 +43,14 @@ app.controller('HouseController', function() {
 		return false;
 	};
 
+	house.hasExpenses = function() {
+		return house.expenses.length > 0;
+	};
+
+	house.hasRoomiesNoExpenses = function() {
+		return house.hasRoomies() && !house.hasExpenses();
+	};
+
 	house.addRoomie = function() {
 		house.roomies.push({id: house.roomies.length, name: house.roomieName, owes: 0.00, expenses: []});
 		house.roomieName = '';
