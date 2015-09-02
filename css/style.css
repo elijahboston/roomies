@@ -145,11 +145,12 @@ table {
     width: 25px; }
   table tr td.roomie-name {
     border-bottom: 1px solid white; }
-  table tr td.roomie-owes {
+  table tr .roomie-owes {
     width: 85px;
     font-weight: 400;
     background-color: white;
-    color: #0F8A0A; }
+    color: #0F8A0A;
+    padding: 5px; }
 
 #credits {
   clear: both;
@@ -168,11 +169,11 @@ table {
   display: none; }
 
 @media screen and (max-width: 800px) {
-  #breakdown {
-    border-right: none; }
-
   .summary {
     padding: 20px 20px 0 20px; }
+
+  .hide-on-mobile {
+    display: none; }
 
   .show-on-mobile {
     display: inline-block; }
@@ -190,18 +191,26 @@ table {
     float: left;
     padding: 0; }
 
-  #breakdown #add-roomie {
-    padding: 15px; }
-    #breakdown #add-roomie #roomie-name {
-      width: 57%; }
-  #breakdown .split {
-    width: 29px; }
-  #breakdown .cost-breakdown td {
-    padding: 0 5; }
+  #breakdown {
+    border-right: none; }
+    #breakdown #add-roomie {
+      padding: 15px; }
+      #breakdown #add-roomie #roomie-name {
+        width: 57%; }
+    #breakdown .cost-breakdown td {
+      white-space: nowrap; }
+    #breakdown .roomie-owes {
+      float: right;
+      width: initial; }
+    #breakdown .roomie-name {
+      padding: 5px 0 0 5px; }
+
+  #expenses #add-expense {
+    padding: 0 15px 15px 15px; }
 
   .collapse-container {
     display: none;
-    padding: 10px; }
+    padding: 15px 0; }
 
   h3 {
     padding: 20px;

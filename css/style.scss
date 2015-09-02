@@ -144,11 +144,12 @@ table {
     td.roomie-name {
       border-bottom:1px solid white;
     }
-    td.roomie-owes {
+    .roomie-owes {
       width:85px;
       font-weight:400;
       background-color: white;
       color: #0F8A0A;
+      padding:5px;
     }
   }
 }
@@ -172,13 +173,13 @@ table {
 
 @media screen and (max-width: 800px)
 {
-  #breakdown {
-    border-right:none;
-  }
+
   .summary {
     padding:20px 20px 0 20px;
   }
-
+  .hide-on-mobile {
+    display:none;
+  }
   .show-on-mobile {
     display: inline-block;
   }
@@ -200,6 +201,7 @@ table {
   }
 
   #breakdown {
+    border-right:none;
     #add-roomie {
       padding:15px;
 
@@ -207,17 +209,27 @@ table {
         width:57%;
       }
     }
-    .split {
-      width:29px;
-    }
     .cost-breakdown td {
-      padding:0 5px;
+      white-space: nowrap;
+    }
+    .roomie-owes {
+      float:right;
+      width:initial;
+    }
+    .roomie-name {
+      padding:5px 0 0 5px;
+    }
+  }
+
+  #expenses {
+    #add-expense {
+      padding:0 15px 15px 15px;
     }
   }
 
   .collapse-container {
     display:none;
-    padding:10px;
+    padding:15px 0;
   }
 
   h3 {
