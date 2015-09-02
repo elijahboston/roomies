@@ -44,7 +44,7 @@
                             <tr ng-repeat="expense in roomie.expenses">
                                 <td class="roomie-delete-td"><a href="#" ng-click="house.deleteIndividualExpense(roomie, expense)" class="delete">&#xe602;</a></td>
                                 <td>{{expense.name}}</td>
-                                <td><input type="text" class="split" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%</td>
+                                <td class="split-percent"><input type="text" class="split" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%</td>
                                 <td>{{expense.indivCost | currency}}</td>
                             </tr>
                         </table>
@@ -59,7 +59,7 @@
         <h3 ng-click="house.setSection('expenses')">
             <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'inactive' : 'active'">&#xe603;</span>
             <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'active' : 'inactive'">&#xe604;</span>
-            Expenses <span ng-show="house.hasExpenses()">- {{house.totalExpenses() | currency}} total</span>
+            Expenses <span ng-show="house.hasExpenses()">- {{house.totalExpenses() | currency}}</span>
         </h3>
         <div class="collapse-container" ng-class="{active : house.sectionSelected('expenses')}">
             <form ng-submit="house.addExpense()">

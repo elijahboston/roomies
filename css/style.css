@@ -74,6 +74,8 @@ input[type="submit"] {
     width: 80%; }
   #breakdown input[type="submit"] {
     width: 10%; }
+  #breakdown .split-percent {
+    width: 96px; }
 
 #expenses h3 {
   margin-top: 0; }
@@ -195,7 +197,7 @@ table {
 
   .collapse-container {
     display: none;
-    padding: 20px; }
+    padding: 10px; }
 
   h3 {
     padding: 20px;
