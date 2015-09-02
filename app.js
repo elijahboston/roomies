@@ -17,6 +17,8 @@ function init(house) {
 	var localRoomies = localStorage.getItem('rmsRoomies'),
 		localExpenses = localStorage.getItem('rmsExpenses');
 
+	house.sections = {};
+
 	if (localRoomies && localExpenses) {
 		house.roomies = JSON.parse(localRoomies);
 		house.expenses = JSON.parse(localExpenses);
@@ -177,8 +179,28 @@ app.controller('HouseController', function() {
 		house.save();
 	};
 
+	house.totalExpenses = function() {
+		var total = 0.00;
+		angular.forEach(house.expenses, function(expense) {
+			total += parseFloat(expense.totalCost);
+		});
+		return total;
+	};
+
 	house.reset = function() {
 		localStorage.clear();
 		init(house);
+	};
+
+	house.setSection = function(section) {
+		if (!house.sections[section]) {
+			house.sections[section] = true;
+ 		} else {
+			house.sections[section] = false;
+		}
+	};
+
+	house.sectionSelected = function(section) {
+		return house.sections[section];
 	};
 });

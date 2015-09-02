@@ -2,78 +2,83 @@
 <html lang="en" ng-app="roomiesApp">
 <head>
     <script type="text/javascript" src="spahql-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="app.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,100' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
     <meta charset="UTF-8">
-    <title>Roomies App</title>
+    <title>Roomies - Make sharing space easier.</title>
 </head>
 <body>
 <div id="header"><h2>Roomies</h2></div>
-<div id="app" ng-controller="HouseController as house">
+<div id="app" class="row" ng-controller="HouseController as house">
     <a href="#" ng-click="house.reset()" id="reset" ng-show="house.hasRoomies()">Reset</a>
     <div id="breakdown">
-        <h3> Cost Breakdown</h3>
-        <form ng-submit="house.addRoomie()">
-            <input type="text" ng-model="house.roomieName" placeholder="Roommate Name" id="roomie-name"/>
-            <input type="submit" value="&#xe803;" class="add icon"/>
-        </form>
-        <p ng-hide="house.hasRoomies()">First, add some roommates.</p>
-        <br/>
-        <table ng-repeat="roomie in house.roomies">
-            <tr>
-                <td class="roomie-delete-td"><a href="#" ng-click="house.deleteRoomie(roomie)" class="delete">&#xe804;</a></td>
-                <td class="roomie-name">
-                    <span class="name"> {{roomie.name}}</span>
-                </td>
-                <td class="roomie-owes"> {{roomie.owes | currency}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <table class="cost-breakdown">
-                        <tr ng-repeat="expense in roomie.expenses">
-                            <td class="roomie-delete-td"><a href="#" ng-click="house.deleteIndividualExpense(roomie, expense)" class="delete">&#xe804;</a></td>
-                            <td>{{expense.name}}</td>
-                            <td><input type="text" class="split" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%</td>
-                            <td>{{expense.indivCost | currency}}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-        </table>
+        <h3 ng-click="house.setSection('breakdown')">
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'inactive' : 'active'">&#xe603;</span>
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('breakdown') ? 'active' : 'inactive'">&#xe604;</span>
+            Cost Breakdown
+        </h3>
+        <div class="collapse-container" ng-class="{active : house.sectionSelected('breakdown')}">
+            <form ng-submit="house.addRoomie()">
+                <input type="text" ng-model="house.roomieName" placeholder="Roommate Name" id="roomie-name"/>
+                <input type="submit" value="&#xe601;" class="add icon"/>
+            </form>
+            <p ng-hide="house.hasRoomies()">First, add some roommates.</p>
+            <br/>
+            <table ng-repeat="roomie in house.roomies">
+                <tr>
+                    <td class="roomie-delete-td"><a href="#" ng-click="house.deleteRoomie(roomie)" class="delete">&#xe602;</a></td>
+                    <td class="roomie-name">
+                        <span class="name"> {{roomie.name}}</span>
+                    </td>
+                    <td class="roomie-owes"> {{roomie.owes | currency}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="2">
+                        <table class="cost-breakdown">
+                            <tr ng-repeat="expense in roomie.expenses">
+                                <td class="roomie-delete-td"><a href="#" ng-click="house.deleteIndividualExpense(roomie, expense)" class="delete">&#xe602;</a></td>
+                                <td>{{expense.name}}</td>
+                                <td><input type="text" class="split" ng-model="expense.split" ng-change="house.changeExpenseSplit(roomie, expense)" value="{{expense.split | number:2}}"/>%</td>
+                                <td>{{expense.indivCost | currency}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <div id="expenses" ng-show="house.hasRoomies()">
-        <h3>Expenses</h3>
-        <form ng-submit="house.addExpense()">
-            <input type="text" ng-model="house.expenseName" placeholder="Expense Name" id="expense-name"/>
-            <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$" id="expense-cost"/>
-            <input type="submit" value="&#xe803;" class="add icon"/>
-        </form>
-        <br/>
-        <table>
-            <tr ng-repeat="expense in house.expenses">
-                <td>{{expense.name}}</td>
-                <td>{{expense.totalCost | currency}}</td>
-                <td><a href="#" ng-click="house.deleteExpense(expense)" class="delete icon">&#xe804;</a></td>
-            </tr>
-        </table>
+        <h3 ng-click="house.setSection('expenses')">
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'inactive' : 'active'">&#xe603;</span>
+            <span class="icon show-on-mobile" ng-class="house.sectionSelected('expenses') ? 'active' : 'inactive'">&#xe604;</span>
+            Expenses
+        </h3>
+        <div class="summary">Total: {{house.totalExpenses() | currency}}</div>
+        <div class="collapse-container" ng-class="{active : house.sectionSelected('expenses')}">
+            <form ng-submit="house.addExpense()">
+                <input type="text" ng-model="house.expenseName" placeholder="Expense Name" id="expense-name"/>
+                <input class="cost" type="text" ng-model="house.expenseTotalCost" placeholder="$" id="expense-cost"/>
+                <input type="submit" value="&#xe601;" class="add icon"/>
+            </form>
+            <br/>
+            <table>
+                <tr ng-repeat="expense in house.expenses">
+                    <td><a href="#" ng-click="house.deleteExpense(expense)" class="delete icon">&#xe602;</a></td>
+                    <td>{{expense.name}}</td>
+                    <td>{{expense.totalCost | currency}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
+
 <div id="credits">Developed by <a href="http://elijahboston.com">Elijah Boston</a>. Background: "Tones" by <a href="http://www.deviantart.com/art/Tones-370950717">Slurpaza</a>. Font:
     <a href="https://www.google.com/fonts/specimen/Work+Sans">Work Sans</a>. Written in AngularJS.</div>
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-67063505-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
 </body>
 </html>
