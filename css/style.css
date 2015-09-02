@@ -196,6 +196,8 @@ table {
       width: 57%; }
   #breakdown .split {
     width: 29px; }
+  #breakdown .cost-breakdown td {
+    padding: 0 5; }
 
   .collapse-container {
     display: none;
