@@ -194,6 +194,8 @@ table {
     padding: 15px; }
     #breakdown #add-roomie #roomie-name {
       width: 57%; }
+  #breakdown .split {
+    width: 29px; }
 
   .collapse-container {
     display: none;
