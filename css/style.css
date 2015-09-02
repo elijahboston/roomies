@@ -163,7 +163,7 @@ table {
 .show-on-mobile {
   display: none; }
 
-@media (max-width: 800px) {
+@media screen and (max-width: 800px) {
   #breakdown {
     border-right: none; }
 
